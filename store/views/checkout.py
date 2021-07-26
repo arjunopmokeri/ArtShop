@@ -10,19 +10,23 @@ class CheckOut(View):
     def post(self, request):
         address = request.POST.get('address')
         phone = request.POST.get('phone')
-        customer = request.session.get('customer')
+        cust = request.session.get('customer')
         cart = request.session.get('cart')
-        product = product.get_products_by_id(list(cart.keys()))
+        print("helloo==123: ", address, phone, customer, cart)
+        products = product.get_products_by_id(list(cart.keys()))
 
-        print(address, phone, customer, cart, product)
+        print("helloo==arjun: ", products)
 
-        for product in products:
-            order=Orders(customer=customer(id=customer),
-                            product=product,
-                            price=product.price,
-                            address=address,
-                            phone=phone,
-                            quantity=cart.get(str(product.id)))
-                        
-        request.session['cart']={}
+        for prod in products:
+            order = Orders(customer=customer(id=cust),
+                           product=prod,
+                           price=prod.price,
+                           address=address,
+                           phone=phone,
+                           quantity=cart.get(str(prod.id)))
+
+            order.save()
+            #order.placeOrder()
+
+        request.session['cart'] = {}
         return redirect('cart')
